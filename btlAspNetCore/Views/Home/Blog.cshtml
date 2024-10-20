@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewData["Title"] = "Blog";
+    var blogs = ViewBag.Blogs as IEnumerable<btlAspNetCore.Models.DataModels.Blog>;
+}
+
+<!--================Home Banner Area =================-->
+<!-- breadcrumb start-->
+<section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="breadcrumb_iner">
+                    <div class="breadcrumb_iner_item">
+                        <h2>Blog</h2>
+                        <p>Home <span>-</span> Blog</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- breadcrumb start-->
+<!--================Blog Area =================-->
+<section class="blog_area padding_top">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mb-5 mb-lg-0">
+                <div class="blog_left_sidebar">
+                    @foreach (var b in blogs)
+                    {
+                        <article class="blog_item">
+                            <div class="blog_item_img">
+                                <a asp-action="BlogDetail" asp-controller="Home" asp-route-blogId="@b.Id"><img class="card-img rounded-0" src="@b.Image" alt="" height="300px"></a>
+                            </div>
+
+                            <div class="blog_details">
+                                <a class="d-inline-block" asp-action="BlogDetail" asp-controller="Home" asp-route-blogId="@b.Id">
+                                    <h2>@b.Title</h2>
+                                </a>
+                                @{
+                                    int maxLength = 30; // Giới hạn số ký tự
+                                    string blogContent = b.BlogContent;
+
+                                    // Kiểm tra độ dài và cắt nếu cần
+                                    string displayContent = blogContent.Length > maxLength ?
+                                    blogContent.Substring(0, maxLength) + "..." :
+                                    blogContent;
+                                }
+                                @Html.Raw(displayContent)
+                                
+                            </div>
+                        </article>
+                    }
+                    
+                        <ul class="pagination justify-content-center">
+                            <!-- Previous button -->
+                            <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                                <a class="page-link" href="?name=@ViewBag.Name&page=@(Model.PageNumber - 1)" aria-label="Previous">
+                                    &lt
+                                </a>
+                            </li>
+
+                            <!-- Page numbers -->
+                            @for (int i = 1; i <= Model.PageCount; i++)
+                            {
+                                <li class="page-item bg-danger @(Model.PageNumber == i ? "active" : "")">
+                                    <a class="page-link" href="?name=@ViewBag.Name&page=@i">@i</a>
+                                </li>
+                            }
+
+                            <!-- Ellipsis for skipped pages -->
+                            @if (Model.PageCount > 5 && Model.PageNumber > 3)
+                            {
+                                <li class="page-item disabled">
+                                    <a class="page-link">…</a>
+                                </li>
+                            }
+
+                            <!-- Next button -->
+                            <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                                <a class="page-link" href="?name=@ViewBag.Name&page=@(Model.PageNumber + 1)" aria-label="Next">
+                                    &gt
+                                </a>
+                            </li>
+                        </ul>
+                  
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="blog_right_sidebar">
+                    <aside class="single_sidebar_widget search_widget">
+                        <form action="">
+                            <div class="form-group">
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder='Search Keyword' name="search" value="@ViewBag.Search"
+                                           onfocus="this.placeholder = ''"
+                                           onblur="this.placeholder = 'Search Keyword'">
+                                    <div class="input-group-append">
+                                        <button class="btn" type="submit"><i class="ti-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="button rounded-0 primary-bg text-white w-100 btn_1"
+                                    type="submit">
+                                Search
+                            </button>
+                        </form>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================Blog Area =================-->

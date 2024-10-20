@@ -1,0 +1,75 @@
+﻿@model btlAspNetCore.Models.DataModels.Blog
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="col-lg-10 m-auto">
+<h1>Edit</h1>
+
+<h4>Blog</h4>
+<hr />
+<div class="row">
+        <div class="col-md-8 ml-5" >
+            <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+                <div class="form-group">
+                    <label for="singleImageUpload" class="control-label">Upload Single Image</label>
+                    <input type="file" id="singleImageUpload" name="singleImage" class="form-control" />
+                    <div id="singleImagePreview" class="mt-2">
+                        @if (@Model.Image != null)
+                        {
+                            <img id="currentSingleImage" src="@Model.Image" style="width: 200px; height: 200px; margin: 10px;" alt="Current Single Image" />
+                        }
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="BlogContent" class="control-label"></label>
+                    <textarea asp-for="BlogContent" id="description" class="form-control"></textarea>
+                    <span asp-validation-for="BlogContent" class="text-danger"></span>
+                </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+</div>
+
+@section Scripts {
+    <script>
+        CKEDITOR.replace('description');
+        // Single Image Upload Preview
+        document.getElementById('singleImageUpload').addEventListener('change', function (event) {
+            var singleImagePreview = document.getElementById('singleImagePreview');
+            singleImagePreview.innerHTML = ''; // Clear previous previews
+            var file = event.target.files[0];
+
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var imgElement = document.createElement('img');
+                    imgElement.src = e.target.result;
+                    imgElement.style.width = '300px';
+                    imgElement.style.height = '200px';
+                    imgElement.style.margin = '10px';
+                    singleImagePreview.appendChild(imgElement);
+                };
+                reader.readAsDataURL(file); // Read the image file as a data URL
+            }
+        });
+
+
+    </script>
+}

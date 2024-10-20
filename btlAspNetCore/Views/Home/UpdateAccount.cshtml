@@ -1,0 +1,104 @@
+﻿@{
+    ViewData["Title"] = "UpdateAccount";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model btlAspNetCore.Models.DataModels.UserViewModel
+
+@section Css {
+    <style>
+        .avatar {
+            width: 200px;
+            height: 200px;
+        }
+    </style>
+}
+
+<section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="breadcrumb_iner">
+                    <div class="breadcrumb_iner_item">
+                        <h2>Update Account</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section style="background-color: #f7f7f7;" class="">
+    <div class="container bootstrap snippets bootdey card">
+        <h1 class="p-3">Update Profile Information</h1>
+        <hr>
+        <form class="form-horizontal" role="form" method="POST"
+              action=""  enctype="multipart/form-data">
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-4">
+                    <div class="text-center mt-4">
+                        @if (!string.IsNullOrEmpty(ViewBag.User.Avatar))
+                        {
+                            <img id="img" src="@ViewBag.User.Avatar" alt="avatar"
+                                 class="img-fluid mb-2" style="width: 150px;" />
+                        }
+                        else
+                        {
+                            <img id="img" src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                                 class="img-fluid mb-2" style="width: 150px;" />
+                        }
+                        <h6 class="mt-2 mb-2">Change Profile Picture</h6>
+                        <input type="file" class="form-control" onchange="showImg(this, 'img')" name="Photo" />
+                    </div>
+                </div>
+
+                <!-- edit form column -->
+                <div class="col-md-7 personal-info">
+                    <h3 class="p-3">Personal Information</h3>
+
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" value="@ViewBag.User.Id" name="userId" />
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">Name:</label>
+                        <div class="col-lg-10">
+                            <input asp-for="Name" class="form-control" type="text" value="@ViewBag.User.Name" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">Phone:</label>
+                        <div class="col-lg-10">
+                            <input asp-for="Phone" class="form-control" type="text" value="@ViewBag.User.Phone" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label">Address:</label>
+                        <div class="col-lg-10">
+                            <input asp-for="Address" class="form-control" type="text" value="@ViewBag.User.Address" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success m-3">Update Information</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function showImg(input, target) {
+            let file = input.files[0];
+            let reader = new FileReader();
+
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+
+                let img = document.getElementById(target);
+
+                img.src = reader.result;
+            }
+        }
+    </script>
+}

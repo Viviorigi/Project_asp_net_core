@@ -1,0 +1,148 @@
+﻿@model btlAspNetCore.Models.DataModels.Product
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="col-lg-10 m-auto">
+    <h1>Edit Product</h1>
+       
+    <h4>Product</h4>
+    <hr />
+    <form asp-action="Edit" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-5">
+                <!-- Form with multipart encoding for file uploads -->
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Product Information -->
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Price" class="control-label"></label>
+                    <input asp-for="Price" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="SalePrice" class="control-label"></label>
+                    <input asp-for="SalePrice" class="form-control" />
+                    <span asp-validation-for="SalePrice" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Status" class="control-label"></label>
+                    <select asp-for="Status" class="form-control">
+                        <option value="">Select Status</option>
+                        @foreach (var status in ViewBag.StatusOptions)
+                        {
+                            <option value="@status.Value">@status.Text</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Category" class="control-label"></label>
+                    <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-group">
+                    <input type="submit" value="Update" class="btn btn-primary" />
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <textarea asp-for="Description" id="description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <!-- Image Upload Section -->
+                <div class="form-group">
+                    <label for="singleImageUpload" class="control-label">Upload Single Image</label>
+                    <input type="file" id="singleImageUpload" name="singleImage" class="form-control" />
+                    <div id="singleImagePreview" class="mt-2">
+                        @if (@Model.Img!=null)
+                        {
+                            <img id="currentSingleImage" src="@Model.Img" style="width: 200px; height: 200px; margin: 10px;" alt="Current Single Image" />
+                        }
+                    </div>
+                    <input type="hidden" name="singleImageOld" value="@Model.Img" class="form-control" />
+                </div>
+
+                <!-- Multiple Image Upload Section -->
+                <div class="form-group">
+                    <label for="multipleImageUpload" class="control-label">Upload Multiple Images</label>
+                    <input type="file" id="multipleImageUpload" name="multipleImages" class="form-control" multiple />
+                    <div id="multipleImagePreview" class="mt-2 row">
+                        @foreach (var img in Model.ImgProducts)
+                        {
+                             <img id="currentImage" src="@img.Image" style="width: 200px; height: 200px; margin: 10px;" alt="Current Multiple Image" />
+                        }
+                    </div>
+                    <input type="hidden" name="multipleImageUploadOld" value="@Model.ImgProducts" class="form-control" />
+                </div>
+            </div>
+
+        </div>
+    </form>
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+
+</div>
+
+<!-- Script Section for Image Preview -->
+@section Scripts {
+    <script>
+        CKEDITOR.replace('description');
+        // Single Image Upload Preview
+        document.getElementById('singleImageUpload').addEventListener('change', function (event) {
+            var singleImagePreview = document.getElementById('singleImagePreview');
+            singleImagePreview.innerHTML = ''; // Clear previous previews
+            var file = event.target.files[0];
+
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var imgElement = document.createElement('img');
+                    imgElement.src = e.target.result;
+                    imgElement.style.width = '200px';
+                    imgElement.style.height = '200px';
+                    imgElement.style.margin = '10px';
+                    singleImagePreview.appendChild(imgElement);
+                };
+                reader.readAsDataURL(file); // Read the image file as a data URL
+            }
+        });
+
+        // Multiple Image Upload Preview
+        document.getElementById('multipleImageUpload').addEventListener('change', function (event) {
+            var multipleImagePreview = document.getElementById('multipleImagePreview');
+            multipleImagePreview.innerHTML = ''; // Clear previous previews
+            var files = event.target.files;
+
+            // Loop through the selected files and create image elements for preview
+            Array.from(files).forEach(function (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var imgElement = document.createElement('img');
+                    imgElement.src = e.target.result;
+                    imgElement.style.width = '200px';
+                    imgElement.style.height = '200px';
+                    imgElement.style.margin = '10px';
+                    multipleImagePreview.appendChild(imgElement);
+                };
+                reader.readAsDataURL(file); // Read the image file as a data URL
+            });
+        });
+    </script>
+}
+
+

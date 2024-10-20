@@ -1,0 +1,100 @@
+﻿@model IEnumerable<btlAspNetCore.Models.DataModels.Product>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="breadcrumb_iner">
+                    <div class="breadcrumb_iner_item">
+                        <h2>Your Wishlist</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="product_section section_padding">
+    <div class="container">
+        @if (!Model.Any())
+        {
+            <h2>Your wishlist is currently empty.</h2>
+        }
+        else
+        {
+            <h2>Wish List</h2>
+            <table class="table ">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Product Name</th>
+                        <th>Original Price</th>
+                        <th>Sale Price</th>
+                        <th>Add to Cart</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-action="DetailProduct" asp-controller="Home" asp-route-proId="@product.Id">
+                                    <img src="@product.Img" alt="Product Image" width="100" height="100" />
+                                </a>
+                            </td>
+                            <td>@product.Name</td>
+                            <td><del>@product.Price.ToString("#,##0") vnđ</del></td>
+                            <td>@product.SalePrice.ToString("#,##0") vnđ</td>
+                            <td>
+                                <form asp-action="AddToCart" asp-controller="Cart" method="post" class="add-to-cart-form">
+                                    <input type="hidden" name="productId" value="@product.Id" />
+                                    <input type="hidden" name="productName" value="@product.Name" />
+                                    <input type="hidden" name="price" value="@product.SalePrice" />
+                                    <input type="hidden" name="image" value="@product.Img" />
+                                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form asp-action="RemoveFromWishlist" asp-controller="WishList" method="post">
+                                    <input type="hidden" name="productId" value="@product.Id" />
+                                    <button type="submit" class="btn btn-danger">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var toastMessage = '@TempData["ToastMessage"]';
+            var toastType = '@TempData["ToastType"]';
+
+            if (toastMessage) {
+                switch (toastType) {
+                    case 'success':
+                        toastr.success(toastMessage);
+                        break;
+                    case 'error':
+                        toastr.error(toastMessage);
+                        break;
+                    case 'info':
+                        toastr.info(toastMessage);
+                        break;
+                    case 'warning':
+                        toastr.warning(toastMessage);
+                        break;
+                }
+            }
+        });
+    </script>
+}

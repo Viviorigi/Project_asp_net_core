@@ -1,0 +1,67 @@
+﻿@model btlAspNetCore.Models.DataModels.Order
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="col-lg-10 m-auto">
+<h1>Edit</h1>
+
+<h4>Order</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="UserId" class="control-label"></label>
+                <input asp-for="UserId" class="form-control" readonly />
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <select asp-for="Status" class="form-control">
+                    @if (Model.Status == 1)
+                    {
+                        <option value="2">Confirmed</option>
+                        <option value="3">Shipped</option>
+                        <option value="4">Delivered</option>
+                        <option value="5">Cancelled</option>
+                    }
+                    else if (Model.Status == 2)
+                    {
+                        <option value="3">Shipped</option>
+                        <option value="4">Delivered</option>
+                        <option value="5">Cancelled</option>
+                    }
+                    else if (Model.Status == 3)
+                    {
+                        <option value="4">Delivered</option>
+                        <option value="5">Cancelled</option>
+                    }
+                </select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OrderNote" class="control-label"></label>
+                <textarea asp-for="OrderNote" class="form-control" readonly></textarea>
+                <span asp-validation-for="OrderNote" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaymentMethod" class="control-label"></label>
+                <input type="text" class="form-control" value="@(Model.PaymentMethod == 1 ? "Cash" : "Credit")" readonly />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+</div>

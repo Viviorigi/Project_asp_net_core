@@ -1,0 +1,118 @@
+﻿
+@{
+    ViewData["Title"] = "CheckOut";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model List<btlAspNetCore.Models.DataModels.CartItem>;
+
+
+<section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="breadcrumb_iner">
+                    <div class="breadcrumb_iner_item">
+                        <h2> Checkout</h2>
+                        <p>Home <span>-</span> CheckOut</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- breadcrumb start-->
+<!--================Checkout Area =================-->
+<section class="checkout_area padding_top">
+    <div class="container">
+        <form class="row contact_form" asp-action="CheckOut" asp-controller="Cart" method="post">
+        <div class="billing_details">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h3>Billing Details</h3>
+              
+                            <input type="hidden" name="userId" value="@ViewBag.User.Id" />
+                        <div class="col-md-12 form-group p_star">
+                            <input type="text" class="form-control" id="first" name="name" value="@User.Identity.Name" placeholder="Full Name" />
+                           
+                        </div>
+                        <div class="col-md-12 form-group p_star">
+                            <input type="text" class="form-control" id="number" name="phone" placeholder="Phone Number" value="@ViewBag.User.Phone" />
+                           
+                        </div>
+                        <div class="col-md-12 form-group p_star">
+                            <input type="text" class="form-control" id="email" name="email" placeholder="Email" value="@ViewBag.User.Email" />
+                           
+                        </div>
+                        <div class="col-md-12 form-group p_star">
+                            <input type="text" class="form-control" id="address" name="address" placeholder="Address" value="@ViewBag.User.Address" />
+                            
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <textarea class="form-control" name="orderNote" id="message" rows="1"
+                                      placeholder="Order Notes"></textarea>
+                        </div>
+                   
+                </div>
+                <div class="col-lg-4">
+                    <div class="order_box">
+                        <h2>Your Order</h2>
+                        <ul class="list">
+                            <li>
+                                <a href="#">
+                                    Product
+                                    <span>Total</span>
+                                </a>
+                            </li>
+                            @{
+                                float subTotal = 0;
+                            }
+                            @foreach (var item in Model)
+                            {
+                                <li>
+                                    <a href="#">
+                                        @item.ProductName
+                                        <span class="middle">x @item.Quantity</span>
+                                        <span class="last">@((item.Price * item.Quantity).ToString("#,##0")) vnđ</span>
+                                    </a>
+                                </li>
+                                subTotal += (item.Price * item.Quantity);
+                            }
+                        </ul>
+                        <ul class="list list_2">
+                            <li>
+                                <a href="#">
+                                    Subtotal
+                                    <span>@subTotal.ToString("#,##0") vnđ</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Shipping
+                                    <span>100,000 vnđ</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    Total
+                                    <span>@((subTotal + 100000).ToString("#,##0")) vnđ</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="mb-5">
+                            <div class="payment_item mb-3">
+                                <label for="payment_method">Choose Payment Method:</label>
+                                <select id="payment_method" name="paymentMethod" class="full-width-select">
+                                    <option value="1">Cash</option>
+                                    <option value="2">Credit Card</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn_3 mt-5 w-100 " >Proceed to Paypal</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+    </div>
+</section>
+<!--================End Checkout Area =================-->

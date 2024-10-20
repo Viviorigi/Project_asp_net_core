@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewData["Title"] = "BlogDetail";
+}
+
+<!--================Home Banner Area =================-->
+<!-- breadcrumb start-->
+<section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="breadcrumb_iner">
+                    <div class="breadcrumb_iner_item">
+                        <h2>Blog</h2>
+                        <p>Home <span>-</span> Blog Detail</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- breadcrumb start-->
+<!--================Blog Area =================-->
+<section class="blog_area single-post-area padding_top">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 posts-list">
+                <div class="single-post">
+                    <div class="feature-img">
+                        <img class="img-fluid w-100" src="@ViewBag.BlogDetail.Image" alt="">
+                    </div>
+                    <div class="blog_details">
+                        <h2>
+                            @ViewBag.BlogDetail.Title
+                        </h2>
+                        @Html.Raw(ViewBag.BlogDetail.BlogContent)
+                    </div>
+                </div>
+                               
+            </div>
+           
+        </div>
+    </div>
+</section>
+<!--================Blog Area end =================-->

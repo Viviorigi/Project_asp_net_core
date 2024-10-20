@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "btlAspNetCore", "btlAspNetCore\btlAspNetCore.csproj", "{99150366-20D9-4BAA-B522-E57D63A20EB7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99150366-20D9-4BAA-B522-E57D63A20EB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99150366-20D9-4BAA-B522-E57D63A20EB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99150366-20D9-4BAA-B522-E57D63A20EB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99150366-20D9-4BAA-B522-E57D63A20EB7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {18C507FF-923C-4A35-B90F-1F1FA129A06A}
+	EndGlobalSection
+EndGlobal

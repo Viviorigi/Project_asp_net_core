@@ -1,0 +1,202 @@
+﻿@{
+    ViewData["Title"] = "ShopCategory";
+    var products = ViewBag.Products as IEnumerable<btlAspNetCore.Models.DataModels.Product>;
+}
+
+<!--================Home Banner Area =================-->
+<!-- breadcrumb start-->
+<section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="breadcrumb_iner">
+                    <div class="breadcrumb_iner_item">
+                        <h2>Shop Category</h2>
+                        <p>Home <span>-</span> Shop Category</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- breadcrumb start-->
+
+<!--================Category Product Area =================-->
+<section class="cat_product_area section_padding">
+    <div class="container">
+        <form id="categoryForm" action="" method="get">
+            <div class="row">   
+                <div class="col-lg-3">
+                    <div class="left_sidebar_area">
+                        <aside class="left_widgets p_filter_widgets">
+                            <div class="l_w_title">
+                                <h3>Categories</h3>
+                            </div>
+                            <div class="widgets_inner">
+                                <ul class="list">
+                                    <input type="hidden" name="cateId" value="@ViewContext.HttpContext.Request.Query["cateId"]" />
+                                    <li class="@(string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["cateId"]) || ViewContext.HttpContext.Request.Query["cateId"] == "0" ? "active" : "")">
+                                        <a href="javascript:void(0);" onclick="submitCategoryForm(0)">
+                                            All Categories
+                                        </a>
+                                    </li>
+                                    @foreach (var c in ViewBag.categories)
+                                    {
+                                        <li class="@(ViewContext.HttpContext.Request.Query["cateId"] == c.Category.Id.ToString() ? "active" : "")">
+                                            <a href="javascript:void(0);" onclick="submitCategoryForm(@c.Category.Id)">
+                                                @c.Category.Name
+                                            </a>
+                                            <span>@c.ProductCount</span>
+                                        </li>
+                                    }      
+                                </ul>
+                            </div>
+                        </aside>
+
+                        <aside class="left_widgets p_filter_widgets price_rangs_aside">
+                            <div class="l_w_title">
+                                <h3>Price Filter</h3>
+                            </div>
+                            <div class="widgets_inner">
+                                <div class="range_item">
+                                    <div class="price-filter">
+                                        <label for="price-range">Price Range:</label>
+                                        <input type="number" name="minPrice" id="minPrice" value="@ViewContext.HttpContext.Request.Query["minPrice"]" />
+                                        <br /><span>to</span> <br />
+                                        <input type="number" name="maxPrice" id="maxPrice" value="@ViewContext.HttpContext.Request.Query["maxPrice"]" />
+                                    </div>
+                                    <br />
+                                    <button type="submit" class="btn btn-danger" id="filter-button">Filter</button>
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+
+                <div class="col-lg-9">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="product_top_bar d-flex justify-content-between align-items-center">
+                                <div class="single_product_menu">
+                                    <p><span>@ViewBag.ProductCount</span> Product Found</p>
+                                </div>
+                                <div class="single_product_menu d-flex">
+                                    <h5>Sort by : </h5>
+                                    <select name="sort" onchange="this.form.submit()">
+                                        <option value="">Default</option>
+                                        @foreach (var status in ViewBag.SortOptions)
+                                        {
+                                            if (status.Value == ViewBag.SortSelected)
+                                            {
+                                                <option value="@status.Value" selected>@status.Text</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@status.Value">@status.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="single_product_menu d-flex">
+                                    <div class="input-group">
+                                        <input type="text" name="name" class="form-control" placeholder="search" value="@ViewBag.Name" aria-describedby="inputGroupPrepend">
+                                        <button type="submit" class="input-group-prepend btn">
+                                            <span id="inputGroupPrepend">
+                                                <i class="ti-search"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        </form>
+                    <div class="row align-items-center latest_product_inner">
+                        @foreach (var p in products)
+                        {
+                            <div class="col-lg-4 col-sm-6">
+                                <div class="single_product_item">
+                                    <a asp-action="DetailProduct" asp-controller="Home" asp-route-proId="@p.Id"><img src="@p.Img" width="100%" height="300px"></a>
+                                    <div class="single_product_text">
+                                        <h4>@p.Name</h4>
+                                        <h3><del>@p.Price.ToString("#,##0") vnđ</del> @p.SalePrice.ToString("#,##0") vnđ</h3>
+                            <div class="d-flex justify-content-between">
+                                        <form asp-action="AddToCart" asp-controller="Cart" method="post" class="add-to-cart-form">
+                                            <input type="hidden" name="productId" value="@p.Id" />
+                                            <input type="hidden" name="productName" value="@p.Name" />
+                                            <input type="hidden" name="price" value="@p.SalePrice" />
+                                            <input type="hidden" name="image" value="@p.Img" />
+                                            
+                                             <a href="#" class="add_cart" onclick="event.preventDefault(); this.closest('form').submit();">+ Add to Cart </a>                                         
+                                        </form>
+                                <form asp-action="@((ViewBag.WishlistProducts != null && ViewBag.WishlistProducts.Contains(p.Id)) ? "RemoveFromWishlist" : "AddToWishlist")"
+                                      asp-controller="WishList"
+                                      method="post"
+                                      class="add-to-wishlist-form">
+                                    <input type="hidden" name="productId" value="@p.Id" />
+                                    <div class="d-flex justify-content-between">
+                                        @if (ViewBag.WishlistProducts != null && ViewBag.WishlistProducts.Contains(p.Id))
+                                        {
+                                          
+                                            <a href="#" class="add_wishlist" onclick="event.preventDefault(); this.closest('form').submit();">
+                                                <i class="fas fa-heart" style="color: red;"></i> 
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            
+                                            <a href="#" class="add_wishlist" onclick="event.preventDefault(); this.closest('form').submit();">
+                                                <i class="far fa-heart"></i> 
+                                            </a>
+                                        }
+                                    </div>
+                                </form>
+                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="pageination">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                                        <a class="page-link" href="?cateId=@ViewContext.HttpContext.Request.Query["cateId"]&sort=@ViewContext.HttpContext.Request.Query["sort"]&name=@ViewBag.Name&minPrice=@ViewBag.MinPrice&maxPrice=@ViewBag.MaxPrice&page=@(Model.PageNumber - 1)" aria-label="Previous">&lt;</a>
+                                    </li>
+                                    @for (int i = 1; i <= Model.PageCount; i++)
+                                    {
+                                        <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                                            <a class="page-link" href="?cateId=@ViewContext.HttpContext.Request.Query["cateId"]&sort=@ViewContext.HttpContext.Request.Query["sort"]&name=@ViewBag.Name&minPrice=@ViewBag.MinPrice&maxPrice=@ViewBag.MaxPrice&page=@i">@i</a>
+                                        </li>
+                                    }
+                                    @if (Model.PageCount > 5 && Model.PageNumber > 3)
+                                    {
+                                        <li class="page-item disabled">
+                                            <a class="page-link">…</a>
+                                        </li>
+                                    }
+                                    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                                        <a class="page-link" href="?cateId=@ViewContext.HttpContext.Request.Query["cateId"]&sort=@ViewContext.HttpContext.Request.Query["sort"]&name=@ViewBag.Name&minPrice=@ViewBag.MinPrice&maxPrice=@ViewBag.MaxPrice&page=@(Model.PageNumber + 1)" aria-label="Next">&gt;</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+    </div>
+</section>
+<!--================End Category Product Area =================-->
+
+@section Scripts {
+    <script>
+        function submitCategoryForm(categoryId) {
+            document.querySelector('input[name="cateId"]').value = categoryId;
+            document.getElementById('categoryForm').submit();
+        }
+    </script>
+
+}

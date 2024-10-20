@@ -1,0 +1,295 @@
+﻿
+@{
+    ViewData["Title"] = "DetailProduct";
+}
+@model btlAspNetCore.Models.DataModels.Product;
+
+<!-- breadcrumb start-->
+<section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="breadcrumb_iner">
+                    <div class="breadcrumb_iner_item">
+                        <h2>Shop Single</h2>
+                        <p>Home <span>-</span> Shop Single</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- breadcrumb start-->
+<!--================End Home Banner Area =================-->
+<!--================Single Product Area =================-->
+<div class="product_image_area section_padding">
+    <div class="container">
+        <div class="row s_product_inner justify-content-between">
+            <div class="col-lg-7 col-xl-7">
+                <div class="product_slider_img">
+                    <div id="vertical">
+                        @foreach (var i in @Model.ImgProducts){
+                        <div data-thumb="@i.Image">
+                             <img src="@i.Image" width="500" height="600" />
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 col-xl-4">
+                <div class="s_product_text">
+                    <h3>@Model.Name</h3>
+                    <h2><del>@Model.Price.ToString("#,##0") vnđ</del> <strong style="color:black!important">@Model.SalePrice.ToString("#,##0") vnđ</strong> </h2>
+                    <ul class="list mb-5" >
+                        <li>
+                            <a class="active" href="#">
+                                <span>Category</span> : @Model.Category.Name
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"> <span>Availibility</span> : @(Model.Status==1?"In Stock":"Out of Stock")</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex justify-content-around align-items-center ">   
+                    <form asp-action="AddToCart" asp-controller="Cart" method="post">
+                    <div class="card_area d-flex justify-content-between align-items-center">
+                        <div class="product_count">
+                                <input type="hidden" name="productId" value="@Model.Id" />
+                                <input type="hidden" name="productName" value="@Model.Name" />
+                                <input type="hidden" name="price" value="@Model.SalePrice" />
+                                <input type="hidden" name="image" value="@Model.Img" />
+                            <span class="inumber-decrement"> <i class="ti-minus"></i></span>
+                            <input class="input-number" type="text" value="1" min="1" max="1000" name="quantity">
+                            <span class="number-increment"> <i class="ti-plus"></i></span>
+                        </div>
+                        <button type="submit" class="btn_3 ml-2">Add to cart</button>
+                    </div>
+                    </form>
+                        <form asp-action="@((ViewBag.WishlistProducts != null && ViewBag.WishlistProducts.Contains(Model.Id)) ? "RemoveFromWishlist" : "AddToWishlist")"
+                              asp-controller="WishList"
+                              method="post"
+                              class="add-to-wishlist-form">
+                            <input type="hidden" name="productId" value="@Model.Id" />
+                            <div class="d-flex justify-content-between">
+                                @if (ViewBag.WishlistProducts != null && ViewBag.WishlistProducts.Contains(Model.Id))
+                                {
+                                    <!-- Product is in the wishlist, show filled heart -->
+                                    <a href="#" class="like_us" onclick="event.preventDefault(); this.closest('form').submit();">
+                                        <i class="fas fa-heart" style="color: red!important;"></i> <!-- Filled heart icon -->
+                                    </a>
+                                }
+                                else
+                                {
+                                    <!-- Product is not in the wishlist, show empty heart -->
+                                    <a href="#" class="like_us" onclick="event.preventDefault(); this.closest('form').submit();">
+                                        <i class="far fa-heart"></i> <!-- Outline heart icon -->
+                                    </a>
+                                }
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--================End Single Product Area =================-->
+<!--================Product Description Area =================-->
+<section class="product_description_area">
+    <div class="container">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                   aria-selected="true">Description</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
+                   aria-selected="false">Reviews</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
+                @Html.Raw(Model.Description)
+            </div>
+            <div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="row total_rate">
+                            <div class="col-8 mb-3">
+                                <div class="box_total">
+                                    <h5>Overall</h5>
+                                    <h4>@ViewBag.AverageRating</h4>
+                                    <h6>(@ViewBag.TotalReviews Reviews)</h6>
+                                </div>
+                            </div>
+                           
+                        </div>
+
+                        <div class="review_list">
+                            @foreach (var review in Model.Ratings)
+                            {
+                                <div class="review_item">
+                                    <div class="media">
+                                        <div class="d-flex">
+                                            <img src="@review.User.Avatar" alt="user image" width="80px" />
+                                        </div>
+                                        <div class="media-body">
+                                            <h4>@review.User.Name</h4>
+                                            @for (int i = 0; i < review.RatingStar; i++)
+                                            {
+                                                <i class="fa fa-star"></i>
+                                            }
+                                            @for (int i = (int)review.RatingStar; i < 5; i++)
+                                            {
+                                                <i class="fa fa-star-o"></i>
+                                            }
+                                        </div>
+                                    </div>
+                                    <p>@review.Comment</p>
+                                </div>
+                            }
+                        </div>
+
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="review_box">
+                            <h4>Add a Review</h4>
+
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <!-- User is logged in -->
+                                <form asp-action="AddReview" asp-controller="Home" method="post">
+                                    <input type="hidden" name="productId" value="@Model.Id" />
+
+                                    <p>Your Rating:</p>
+                                    <div class="rateyo"
+                                         data-rateyo-rating="3"                            
+                                         data-rateyo-num-stars="5"
+                                         data-rateyo-score="4"></div>
+                                   
+                                    <span class='result mb-2'></span>
+                                   
+                                    <input type="hidden" id="ratingStar" name="ratingStar" />
+
+
+                                    <div class="form-group">
+                                        <textarea class="form-control" name="comment" placeholder="Review"></textarea>
+                                    </div>
+                                    <div class="text-right">
+                                        <button type="submit" class="btn_3">Submit Now</button>
+                                    </div>
+                                </form>
+                            }
+                            else
+                            {
+                                <!-- User is not logged in -->
+                                <p>Please <a href="@Url.Action("Login", "Home")">log in</a> to submit a review.</p>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================End Product Description Area =================-->
+<!-- product_list part start-->
+@* <section class="product_list best_seller">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="section_tittle text-center">
+                    <h2>Best Sellers <span>shop</span></h2>
+                </div>
+            </div>
+        </div>
+        <div class="row align-items-center justify-content-between">
+            <div class="col-lg-12">
+                <div class="best_product_slider owl-carousel">
+                    <div class="single_product_item">
+                        <img src="/home/img/product/product_1.png" alt="">
+                        <div class="single_product_text">
+                            <h4>Quartz Belt Watch</h4>
+                            <h3>$150.00</h3>
+                        </div>
+                    </div>
+                    <div class="single_product_item">
+                        <img src="/home/img/product/product_2.png" alt="">
+                        <div class="single_product_text">
+                            <h4>Quartz Belt Watch</h4>
+                            <h3>$150.00</h3>
+                        </div>
+                    </div>
+                    <div class="single_product_item">
+                        <img src="/home/img/product/product_3.png" alt="">
+                        <div class="single_product_text">
+                            <h4>Quartz Belt Watch</h4>
+                            <h3>$150.00</h3>
+                        </div>
+                    </div>
+                    <div class="single_product_item">
+                        <img src="/home/img/product/product_4.png" alt="">
+                        <div class="single_product_text">
+                            <h4>Quartz Belt Watch</h4>
+                            <h3>$150.00</h3>
+                        </div>
+                    </div>
+                    <div class="single_product_item">
+                        <img src="/home/img/product/product_5.png" alt="">
+                        <div class="single_product_text">
+                            <h4>Quartz Belt Watch</h4>
+                            <h3>$150.00</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section> *@
+<!-- product_list part end-->
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            // Check for success message
+            var successMessage = '@TempData["SuccessMessage"]';
+            if (successMessage) {
+                toastr.success(successMessage);
+            }
+
+            // Check for error message
+            var errorMessage = '@TempData["ErrorMessage"]';
+            if (errorMessage) {
+                toastr.error(errorMessage);
+            }
+        });
+    </script>
+
+    <script>
+        // Array representing the number of reviews for each star rating
+        const ratings = [1, 1, 1, 1, 1]; // 1 review for each star (1-5 stars)
+
+        function calculateAverageRating() {
+            let totalReviews = 0;
+            let weightedSum = 0;
+
+            ratings.forEach((count, index) => {
+                // Count total reviews
+                totalReviews += count;
+                // Calculate weighted sum for average rating
+                weightedSum += count * (index + 1); // index + 1 corresponds to the star rating
+            });
+
+            const averageRating = (weightedSum / totalReviews).toFixed(1); // Round to one decimal place
+
+            // Update the DOM with calculated values
+            document.getElementById("averageRating").innerText = averageRating;
+            document.getElementById("totalReviews").innerText = `(${totalReviews} Reviews)`;
+            document.getElementById("commentCount").innerText = totalReviews;
+        }
+
+        // Run the calculation on page load
+        window.onload = calculateAverageRating;
+    </script>
+
+}

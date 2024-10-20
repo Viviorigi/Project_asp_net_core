@@ -1,0 +1,188 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="page-inner">
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+        <div>
+            <h3 class="fw-bold mb-3">Dashboard</h3>
+            <h6 class="op-7 mb-2"> Admin Dashboard</h6>
+        </div>
+        <div class="ms-md-auto py-2 py-md-0">
+            <a asp-controller="Users" asp-action="Index" class="btn btn-label-info btn-round me-2">Manage</a>
+            <a asp-controller ="Users" asp-action="Create" class="btn btn-primary btn-round">Add Customer</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Products</p>
+                                <h4 class="card-title">@ViewBag.ProductCount</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-info bubble-shadow-small">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Subscribers</p>
+                                <h4 class="card-title">@ViewBag.UserCount</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-success bubble-shadow-small">
+                                <i class="fas fa-luggage-cart"></i>
+                            </div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Sales</p>
+                                <h4 class="card-title">@ViewBag.TotalOrderPrice vnđ</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                                <i class="far fa-check-circle"></i>
+                            </div>
+                        </div>
+                        <div class="col col-stats ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">Order</p>
+                                <h4 class="card-title">@ViewBag.OrderCount</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card card-round">
+                <div class="card-body">
+                    <div class="card-head-row card-tools-still-right">
+                        <div class="card-title">New Customers</div>
+        
+                    </div>
+                    <div class="card-list py-4">
+                        @foreach (var u in ViewBag.LatestUsers)
+                        {
+                            <div class="item-list">
+                                <div class="avatar">
+                                    <img src="@u.Avatar" alt="..." class="avatar-img rounded-circle">
+                                </div>
+                                <div class="info-user ms-3">
+                                    <div class="username">@u.Name</div>                                  
+                                </div>
+                                <div class="info-user ms-3">
+                                    <div class="username">@u.Phone</div>
+                                </div>
+                                <div class="info-user ms-3">
+                                    <div class="username">@u.Address</div>
+                                </div>
+                            </div>
+                        }                                    
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card card-round">
+                <div class="card-header">
+                    <div class="card-head-row card-tools-still-right">
+                        <div class="card-title">Transaction History</div>
+                  
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <!-- Projects table -->
+                        <table class="table align-items-center mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Payment Number</th>
+                                    <th scope="col" class="text-end">Payment Method</th>
+                                    <th scope="col" class="text-end">Amount</th>
+                                    <th scope="col" class="text-end">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var o in ViewBag.LastestOrders){
+                                <tr>
+                                    <th scope="row">
+                                        <button class="btn btn-icon btn-round btn-success btn-sm me-2">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+                                        Payment from # @o.Id
+                                    </th>
+                                        <td class="text-end"> @Html.Raw((o.PaymentMethod == 1 ? "<span class='badge badge-primary'>Cash </span>" : "<span class='badge badge-warning'>Credit </span>"))</td>
+                                        <td class="text-end">@o.TotalPrice.ToString("#,##0") vnđ</td>
+                                    <td class="text-end">
+                                            @if (o.Status == 1)
+                                            {
+                                                <span class="badge badge-warning">Pending Confirmation</span>
+                                            }
+                                            else if (o.Status == 2)
+                                            {
+                                                <span class="badge badge-info">Confirmed</span>
+                                            }
+                                            else if (o.Status == 3)
+                                            {
+                                                <span class="badge badge-primary">Shipped</span>
+                                            }
+                                            else if (o.Status == 4)
+                                            {
+                                                <span class="badge badge-success">Delivered</span>
+                                            }
+                                            else if (o.Status == 5)
+                                            {
+                                                <span class="badge badge-danger">Canceled</span>
+                                            }
+                                    </td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

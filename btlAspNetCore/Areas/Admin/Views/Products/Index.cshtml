@@ -1,0 +1,106 @@
+﻿@model btlAspNetCore.Areas.Admin.Models.ProductViewModel;
+@using X.PagedList.Mvc.Core;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="col-lg-10 m-auto">
+    <h1>Products</h1>
+
+    <div class="d-flex align-items-center">
+        <form action="" method="get" class="form-inline">
+            <div class="d-flex align-items-center mx-3">
+                <div class="form-group d-flex align-items-center" style="width:300px">
+                    <label class="sr-only" for="">label</label>
+                    <input class="form-control mr-2" name="name" placeholder="Enter name" value="@ViewBag.name">
+                    <button type="submit" class="btn btn-info"><i class="fas fa-search"></i></button>
+                </div>
+                <select asp-for="CateId" class="form-control" asp-items="ViewBag.CategoryId" style="width:250px !important" onchange="this.form.submit()">
+                    >
+                    <option value="">All Categories</option> 
+                </select>
+            </div>
+
+        </form>
+        <a asp-action="Create" class="btn btn-primary ml-5" style="height:40px"><i class="fas fa-plus"></i> Create</a>
+    </div>
+    <div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width: 5%;" class="text-center">No</th>
+                    <th style="width: 15%;" class="text-center">@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Name)</th>
+                    <th style="width: 15%;" class="text-center">@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Img)</th>
+                    <th style="width: 10%;" class="text-center">@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Price)</th>
+                    <th style="width: 10%;" class="text-center">@Html.DisplayNameFor(model => model.Products.FirstOrDefault().Status)</th>
+                    <th style="width: 10%;" class="text-center">@Html.DisplayNameFor(model => model.Products.FirstOrDefault().CreatedAt)</th>
+                    <th style="width: 10%;" class="text-center">CateName</th>
+                    <th style="width: 25%;" class="text-center">Action</th>
+                </tr>
+
+            </thead>
+            <tbody>
+                @{
+                    int counter = 1; // Initialize counter for serial number
+                }
+                @foreach (var item in Model.Products)
+                {
+                    <tr>
+                        <td class=" text-center">@counter</td>
+                        <td class="text-center">@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td class="text-center">
+                            <img width="120px" src="@item.Img" alt="Product Image" />
+                        </td>
+                        <td class="text-center"><del>@item.Price.ToString("#,##0")</del> / @item.SalePrice.ToString("#,##0") vnd</td>
+                        <td class="text-center">
+                            <label class="badge @(item.Status == 0 ? "bg-danger" : "bg-success")">
+                                @(item.Status == 0 ? "Inactive" : "Active")
+                            </label>
+                        </td>
+                        <td class="text-center">@item.CreatedAt.ToString("dd/MM/yyyy")</td>
+                        <td class="text-center">@item.Category.Name</td>
+                        <td class=" text-center">
+                            <a class="btn btn-secondary mx-2" asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit"></i></a>
+                            <a class="btn btn-info mx-2" asp-action="Details" asp-route-id="@item.Id">Details <i class="fas fa-info"></i></a>
+                            <a class="btn btn-danger mx-2" asp-action="Delete" asp-route-id="@item.Id" onclick="return confirm('Do you want to delete?');"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    counter++; // Increment counter
+                }
+            </tbody>
+        </table>
+        <ul class="pagination justify-content-center">
+            <!-- Previous button -->
+            <li class="page-item @(Model.Products.HasPreviousPage ? "" : "disabled")">
+                <a class="page-link" href="?name=@ViewBag.Name&page=@(Model.Products.PageNumber - 1)" aria-label="Previous">
+                    Previous
+                </a>
+            </li>
+
+            <!-- Page numbers -->
+            @for (int i = 1; i <= Model.Products.PageCount; i++)
+            {
+                <li class="page-item @(Model.Products.PageNumber == i ? "active" : "")">
+                    <a class="page-link" href="?name=@ViewBag.Name&page=@i">@i</a>
+                </li>
+            }
+
+            <!-- Ellipsis for skipped pages -->
+            @if (Model.Products.PageCount > 5 && Model.Products.PageNumber > 3)
+            {
+                <li class="page-item disabled">
+                    <a class="page-link">…</a>
+                </li>
+            }
+
+            <!-- Next button -->
+            <li class="page-item @(Model.Products.HasNextPage ? "" : "disabled")">
+                <a class="page-link" href="?name=@ViewBag.Name&page=@(Model.Products.PageNumber + 1)" aria-label="Next">
+                    Next
+                </a>
+            </li>
+        </ul>
+    </div>
+
+</div>

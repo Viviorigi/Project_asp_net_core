@@ -1,0 +1,156 @@
+﻿
+@{
+	ViewData["Title"] = "UserDetail";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="breadcrumb_iner">
+                    <div class="breadcrumb_iner_item">
+                        <h2>Customer Detail</h2>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section style="background-color: #f7f7f7;">
+	<div class="container py-5">
+		<div class="row">
+			<div class="col">
+				<nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+					<ol class="breadcrumb mb-0">
+						<li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+						<li class="breadcrumb-item"><a asp-action="UserDetail" asp-controller="Home" asp-route-userId="@ViewBag.User.Id">Customer</a></li>
+						<li class="breadcrumb-item active" aria-current="page">@ViewBag.User.Name</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-lg-4">
+				<div class="card mb-4">
+					<div class="card-body text-center">
+						@if(ViewBag.User.Avatar != null)
+						{
+							<img id='img' src="@ViewBag.User.Avatar" alt="avatar"
+							class=" img-fluid mb-2" style="width: 150px;height: 180px;">
+						}
+						else
+						{
+							<img id='img' src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+								 class=" img-fluid mb-2" style="width: 150px;;height: 180px;">
+						}
+
+						<div class="mb-2 mt-2">
+							<label for="photo">Customer </label>
+							<h4>@ViewBag.User.Name</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-8">
+				<div class="card mb-4">
+					<h4 class="text-center p-2">Customer Detail</h4>
+					<div class="card-body">
+						<div class="row">
+							<div class="col-sm-3">
+								<p class="mb-0">Full Name</p>
+							</div>
+							<div class="col-sm-9">
+								<p class="text-muted mb-0">@ViewBag.User.Name</p>
+							</div>
+						</div>
+						<hr>
+
+						<div class="row">
+							<div class="col-sm-3">
+								<p class="mb-0">Address</p>
+							</div>
+							<div class="col-sm-9">
+								<p class="text-muted mb-0">@ViewBag.User.Address</p>
+							</div>
+						</div>
+						<hr>
+						<div class="row">
+							<div class="col-sm-3">
+								<p class="mb-0">Phone</p>
+							</div>
+							<div class="col-sm-9">
+								<p class="text-muted mb-0">@ViewBag.User.Phone</p>
+							</div>
+						</div>
+						<hr>
+						<div class="row justify-content-around">
+							<a asp-action="ChangePassword" asp-controller="Home" asp-route-userId="@ViewBag.User.Id" class="btn btn-warning btn-lg">Change Password</a>
+							<a asp-action="UpdateAccount" asp-controller="Home" asp-route-userId="@ViewBag.User.Id" class="btn btn-success btn-lg">
+								Update Account
+							</a>
+							<!-- Modal -->
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="col-lg-12">
+				<div class="row px-3">
+					<div class="bg-white w-100">
+						<table class="table">
+							<thead class="thead-dark">
+								<tr>
+									<th scope="col">OrderId</th>
+									<th scope="col">Full Name</th>
+									<th scope="col">Payment Method</th>
+									<th scope="col">Status</th>
+									<th scope="col">Info</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var o in @ViewBag.User.Orders)
+								{
+								<tr>
+										<td>@o.Id</td>
+										<td>@ViewBag.User.Name</td>
+										<td>@(o.PaymentMethod==1?"Cash":"Credit")</td>
+										<td >
+											@if (o.Status == 1)
+											{
+												<span class="badge badge-warning">Pending Confirmation</span>
+											}
+											else if (o.Status == 2)
+											{
+												<span class="badge badge-info">Confirmed</span>
+											}
+											else if (o.Status == 3)
+											{
+												<span class="badge badge-primary">Shipped</span>
+											}
+											else if (o.Status == 4)
+											{
+												<span class="badge badge-success">Delivered</span>
+											}
+											else if (o.Status == 5)
+											{
+												<span class="badge badge-danger">Canceled</span>
+											}
+										</td>
+										<td>
+											<a asp-action="UserOrderDetail" asp-controller="Home" asp-route-userId="@ViewBag.User.Id" asp-route-orderId="@o.Id" class="btn btn-success">Detail</a>
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

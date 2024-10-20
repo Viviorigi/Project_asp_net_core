@@ -1,0 +1,178 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model List<btlAspNetCore.Models.DataModels.CartItem>;
+
+<!--================Home Banner Area =================-->
+<!-- breadcrumb start-->
+<section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="breadcrumb_iner">
+                    <div class="breadcrumb_iner_item">
+                        <h2>Cart Products</h2>
+                        <p>Home <span>-</span>Cart Products</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- breadcrumb start-->
+<!--================Cart Area =================-->
+<section class="cart_area padding_top">
+    <div class="container">
+        <div class="cart_inner">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Product</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            float subTotal = 0;
+                        }
+                        @if(Model != null && Model.Any())
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="media">
+                                            <div class="d-flex">
+                                                <img src="@item.Image" width="220px" height="180px" alt="" />
+                                            </div>
+                                            <div class="media-body">
+                                                <p>@item.ProductName</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <h5>@item.Price.ToString("#,##0") vnđ</h5>
+                                    </td>
+                                    <td>
+                                        <div class="product_count">
+                                            <form id="cart-form">
+                                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                                <span class="input-number-decrement"> <i class="ti-angle-down"></i></span>
+                                                <input class="input-number" type="text" value="@item.Quantity" min="0" max="100" name="quantity" data-product-id="@item.ProductId">
+                                                <span class="input-number-increment"> <i class="ti-angle-up"></i></span>
+                                            </form>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <h5>@((item.Price * item.Quantity).ToString("#,##0")) vnđ</h5>
+                                    </td>
+                                    <td>
+                                        <form asp-action="RemoveFromCart" asp-controller="Cart" method="post">
+                                            <input type="hidden" name="productId" value="@item.ProductId" />
+                                            <button class="btn btn-danger">X</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                subTotal += (item.Price * item.Quantity);
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>
+                                    <h1>
+                                    Cart is empty
+                                    </h1>
+                                </td>
+                                <td></td>
+                                 <td></td>
+                                 <td></td>
+                                
+                            </tr>
+                           
+                        }
+
+   
+                        <tr class="bottom_button">
+                            <td>
+                                <a class="btn_1" asp-controller="Cart" asp-action="Index">Update Cart</a>
+                            </td>
+                            <td></td>
+                            <td><a class="btn btn-danger" asp-controller="Cart" asp-action="ClearCart">Clear Cart</a></td>
+                            <td>
+                                
+                            </td>
+                           
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <h5>Subtotal</h5>
+                            </td>
+                            <td>
+                                <h5>@subTotal.ToString("#,##0") vnđ</h5>
+                            </td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+                <div class="checkout_btn_inner float-right">
+                    <a class="btn_1" asp-action="ShopCategory" asp-controller="Home" >Continue Shopping</a>
+                    <a class="btn_1 checkout_btn_1" asp-action="CheckOut" asp-controller="Cart" >Proceed to checkout</a>
+                </div>
+            </div>
+        </div>
+</section>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Use event delegation to avoid duplicate bindings
+            $('body').on('click', '.input-number-decrement', function (e) {
+                e.preventDefault(); // Prevent any default action
+                let inputField = $(this).next('.input-number');
+                let currentQuantity = parseInt(inputField.val());
+                let productId = inputField.data('product-id');                                
+                    inputField.val(currentQuantity);
+                updateCart(productId, currentQuantity);
+            });
+
+            $('body').on('click', '.input-number-increment', function (e) {
+                e.preventDefault(); // Prevent any default action
+                let inputField = $(this).prev('.input-number');
+                let currentQuantity = parseInt(inputField.val());
+                let productId = inputField.data('product-id');
+              
+                inputField.val(currentQuantity);
+                updateCart(productId, currentQuantity);
+            });
+
+            function updateCart(productId, quantity) {
+                $.ajax({
+                    url: '/Cart/UpdateCart',
+                    type: 'POST',
+                    data: {
+                        productId: productId,
+                        quantity: quantity
+                    },
+                    success: function (response) {
+                        window.location.reload();
+                    },
+                    error: function (error) {
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+
+
+    </script>
+}

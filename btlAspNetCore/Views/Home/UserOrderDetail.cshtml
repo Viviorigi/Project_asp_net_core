@@ -1,0 +1,242 @@
+﻿
+@{
+	ViewData["Title"] = "UserOrderDetail";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="breadcrumb_iner">
+                    <div class="breadcrumb_iner_item">
+                        <h2>Customer Order Detail</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section style="background-color: #f7f7f7;">
+	<div class="container py-5">
+		<div class="row">
+			<div class="col">
+				<nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+					<ol class="breadcrumb mb-0">
+						<li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+						<li class="breadcrumb-item"><a asp-action="UserDetail" asp-controller="Home" asp-route-userId="@ViewBag.User.Id">Customer</a></li>
+						<li class="breadcrumb-item"><a asp-action="UserDetail" asp-controller="Home" asp-route-userId="@ViewBag.User.Id">@User.Identity?.Name</a>
+						<li class="breadcrumb-item active" aria-current="page">
+							Order
+							Detail
+						</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-lg-4">
+				<div class="card mb-4">
+					<div class="card-body text-center">
+						@if (ViewBag.User.Avatar != null)
+						{
+							<img id='img' src="@ViewBag.User.Avatar" alt="avatar"
+								 class=" img-fluid mb-2" style="width: 150px;height: 180px;">
+						}
+						else
+						{
+							<img id='img' src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+								 class=" img-fluid mb-2" style="width: 150px;;height: 180px;">
+						}
+
+						<div class="mb-2 mt-2">
+							<label for="photo">Customer </label>
+							<h4>@ViewBag.User.Name</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-8">
+				<div class="card mb-4">
+					<h4 class="text-center p-2">Customer Detail</h4>
+					<div class="card-body">
+						<div class="row">
+							<div class="col-sm-3">
+								<p class="mb-0">Full Name</p>
+							</div>
+							<div class="col-sm-9">
+								<p class="text-muted mb-0">@ViewBag.User.Name</p>
+							</div>
+						</div>
+						<hr>
+
+						<div class="row">
+							<div class="col-sm-3">
+								<p class="mb-0">Address</p>
+							</div>
+							<div class="col-sm-9">
+								<p class="text-muted mb-0">@ViewBag.User.Address</p>
+							</div>
+						</div>
+						<hr>
+						<div class="row">
+							<div class="col-sm-3">
+								<p class="mb-0">Phone</p>
+							</div>
+							<div class="col-sm-9">
+								<p class="text-muted mb-0">@ViewBag.User.Phone</p>
+							</div>
+						</div>
+						<hr>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-12">
+				<div class="row px-3">
+					<div class="bg-white w-100">
+						<h2 class="text-center p-3">
+							<strong>Order Detail</strong>
+						</h2>
+						<table class="table table-hover table-responsive-md">
+							<thead class="thead-dark">
+								<tr>
+									<th scope="col">OrderID</th>
+									<th scope="col">Product</th>
+									<th scope="col">Image</th>
+									<th scope="col">Price</th>
+									<th scope="col">Quantity</th>
+									<th scope="col">SubTotal</th>
+								</tr>
+							</thead>
+							<tbody>
+								@{
+									int counter = 1;
+									float subTotal = 0;
+								}
+								@foreach (var o in ViewBag.OrderDetail.OrderDetails)
+								{
+									<tr>
+										<td style="line-height: 120px">@o.OrderId</td>
+										<td style="line-height: 120px">@o.Product.Name</td>
+										<td>
+											<img src="@o.Product.Img"
+												 style="width: 100px !important; height: 120px !important">
+										</td>
+										<td style="line-height: 120px">
+											@o.Product?.SalePrice.ToString("#,##0") vnđ
+										</td>
+										<td style="line-height: 120px">@o.Quantity</td>
+										<td style="line-height: 120px">
+											@o.TotalPrice.ToString("#,##0") vnđ
+										</td>									
+									</tr>
+									counter++;
+									subTotal += o.TotalPrice;
+									}							
+							</tbody>
+						</table>
+
+						<div class="d-flex justify-content-between">
+							
+								@if (ViewBag.OrderDetail.Status == 1)
+								{
+									<div >
+									<h4 class="p-5">
+										Order Status: <strong class="text-secondary">
+										Pending Confirmation
+										</strong>
+									</h4>
+									<a asp-action="CancelOrder" asp-route-orderId="@ViewBag.OrderDetail.Id" asp-route-userId="@ViewBag.User.Id" asp-controller="Home" class="btn btn-danger ml-5 ">Cancel Order</a>
+									</div>
+									
+								}
+								else if (ViewBag.OrderDetail.Status == 2)
+								{
+								<h4 class="p-5">
+									Order Status:
+									<strong class="text-info">
+
+										Confirmed
+									</strong>
+								</h4>
+								}
+								else if (ViewBag.OrderDetail.Status == 3)
+								{
+								<h4 class="p-5">
+									Order Status:
+									<strong class="text-primary">
+										Shipped
+									</strong>
+								</h4>
+								}
+								else if (ViewBag.OrderDetail.Status == 4)
+								{
+								<h4 class="p-5">
+									Order Status:
+									<strong class="text-success">
+										Delivered
+									</strong>
+								</h4>
+								}
+								else if (ViewBag.OrderDetail.Status == 5)
+								{
+								<h4 class="p-5">
+									Order Status:
+									<strong class="text-danger">
+										Canceled
+									</strong>
+								</h4>
+								}
+							<div>
+								<h4 class="pt-5 pr-5 pl-5">
+									SubTotal:
+									@subTotal.ToString("#,##0") vnđ
+								</h4>
+								<h4 class="pt-2 pr-5 pl-5">
+									Ship:
+									100,000 vnđ
+								</h4>
+								<h3 class="pt-3 pl-5 pb-5">
+									<strong>
+										TotalPrice: @((subTotal + 100000).ToString("#,##0")) vnđ
+									</strong>
+								</h3>
+							</div>
+
+						</div>
+
+					</div>
+					<div class="modal fade" id="exampleModal" tabindex="-1"
+						 role="dialog" aria-labelledby="exampleModalLabel"
+						 aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLabel">Cancel Order</h5>
+									<button type="button" class="close" data-dismiss="modal"
+											aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">Are you want to cancel order?</div>
+								<div class="modal-footer">
+									<a href="${contextPath}/cancelorder/${order.orderId}"
+									   class="btn btn-danger">Yes</a>
+									<button type="button" class="btn btn-secondary"
+											data-dismiss="modal">
+										No
+									</button>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</section>
+
