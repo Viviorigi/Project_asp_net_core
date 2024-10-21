@@ -47,7 +47,7 @@
         </tr>
     </thead>
         @{
-            int counter = 1; 
+            int counter = (Model.PageNumber - 1) * Model.PageSize + 1;
         }
     <tbody>
 @foreach (var item in Model) {

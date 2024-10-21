@@ -35,6 +35,7 @@ namespace btlAspNetCore.Controllers
             ViewBag.Categories= await _context.Categories.Take(6).ToListAsync();
             ViewBag.Banners= await _context.Banners.ToListAsync();
             ViewBag.Products = await _context.Products.ToListAsync();
+            int totalWishlistItems = 0;
             List<int> wishlistProducts = new List<int>();
             if (User.Identity.IsAuthenticated)
             {
@@ -44,6 +45,7 @@ namespace btlAspNetCore.Controllers
                     .Where(w => w.UserId == userId)
                     .Select(w => w.ProductId)
                     .ToListAsync();
+                totalWishlistItems = _context.Wishlists.Where(w => w.UserId == userId).Count();
             }
             else
             {
@@ -53,8 +55,10 @@ namespace btlAspNetCore.Controllers
                 {
                     wishlistProducts = JsonConvert.DeserializeObject<List<int>>(sessionWishlist);
                 }
+               
             }
             ViewBag.WishlistProducts = wishlistProducts;
+            ViewBag.TotalWishlistItems = totalWishlistItems;
             return View();
         }
 
@@ -102,6 +106,7 @@ namespace btlAspNetCore.Controllers
                 default: query = query.OrderBy(p => p.Id); break;
             }
 
+            int totalWishlistItems = 0;
             // Get wishlist products for the current user
             List<int> wishlistProducts = new List<int>();
             if (User.Identity.IsAuthenticated)
@@ -112,6 +117,7 @@ namespace btlAspNetCore.Controllers
                     .Where(w => w.UserId == userId)
                     .Select(w => w.ProductId)
                     .ToListAsync();
+                totalWishlistItems = _context.Wishlists.Where(w => w.UserId == userId).Count();
             }
             else
             {
@@ -128,6 +134,7 @@ namespace btlAspNetCore.Controllers
             var pagedList =  query.ToPagedList(page, pageSize);
             ViewBag.Products = pagedList;
             ViewBag.WishlistProducts = wishlistProducts; // Send to view for wishlist check
+            ViewBag.TotalWishlistItems = totalWishlistItems;
 
             return View(pagedList);
         }
@@ -153,7 +160,7 @@ namespace btlAspNetCore.Controllers
 
             ViewBag.AverageRating = averageRating;
             ViewBag.TotalReviews = totalReviews;
-
+            int totalWishlistItems = 0;
             if (User.Identity.IsAuthenticated)
             {
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
@@ -162,12 +169,14 @@ namespace btlAspNetCore.Controllers
                     .Where(w => w.UserId == userId)
                     .Select(w => w.ProductId)
                     .ToListAsync();
+                totalWishlistItems = _context.Wishlists.Where(w => w.UserId == userId).Count();
             }
             else
             {
           
                 ViewBag.WishlistProducts = GetWishlistFromSessionOrCookie();
             }
+            ViewBag.TotalWishlistItems = totalWishlistItems;
 
             return View(product); 
         }
@@ -304,7 +313,7 @@ namespace btlAspNetCore.Controllers
 
         public async Task<IActionResult> Blog(int page = 1, string search = "")
         {
-            var pageLimit = 1;
+            var pageLimit = 3;
 
             IQueryable<Blog> query = _context.Blogs;
 

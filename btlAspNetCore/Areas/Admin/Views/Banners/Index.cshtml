@@ -36,7 +36,7 @@
     </thead>
     <tbody>
             @{
-                int counter = 1; // Initialize counter for serial number
+                int counter = (Model.PageNumber - 1) * Model.PageSize + 1;
             }
             @foreach (var item in Model) {
                     <tr>

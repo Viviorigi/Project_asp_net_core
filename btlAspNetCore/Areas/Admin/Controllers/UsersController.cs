@@ -78,7 +78,7 @@ namespace btlAspNetCore.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Email,Password,Avatar,Phone,Address,Role")] User user, IFormFile singleImage)
+        public async Task<IActionResult> Create([Bind("Id,Name,Email,Password,Avatar,Phone,Address,Role")] User user, IFormFile? singleImage)
         {
             if (ModelState.IsValid)
             {

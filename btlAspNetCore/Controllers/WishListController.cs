@@ -15,6 +15,7 @@ namespace btlAspNetCore.Controllers
         }
         public IActionResult Index()
         {
+            int totalWishlistItems = 0;
             if (User.Identity.IsAuthenticated)
             {
                 // Fetch wishlist items from the database for logged-in users
@@ -23,7 +24,8 @@ namespace btlAspNetCore.Controllers
                     .Where(w => w.UserId == userId)
                     .Select(w => w.Product)
                     .ToList();
-
+                totalWishlistItems = _context.Wishlists.Where(w => w.UserId == userId).Count();
+                ViewBag.TotalWishlistItems = totalWishlistItems;
                 return View(wishlistItems);
             }
             else

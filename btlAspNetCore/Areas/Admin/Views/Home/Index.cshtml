@@ -106,7 +106,12 @@
                         {
                             <div class="item-list">
                                 <div class="avatar">
+                                    @if (@u.Avatar !=null)
+                                    {
                                     <img src="@u.Avatar" alt="..." class="avatar-img rounded-circle">
+                                   }else{
+                                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="..." class="avatar-img rounded-circle">
+                                   }
                                 </div>
                                 <div class="info-user ms-3">
                                     <div class="username">@u.Name</div>                                  
